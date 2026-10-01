@@ -9,7 +9,7 @@ RAYA's **List agent calls** API, refreshes every 5 minutes (or when you press
 ```
 npm install
 cp .env.example .env.local   # then fill in the values below
-npm run dev                  # http://localhost:3000
+npm run dev                  # http://localhost:3001
 ```
 
 For a long-running copy, use `npm run build && npm start` instead.
