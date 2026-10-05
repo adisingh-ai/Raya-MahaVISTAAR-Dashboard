@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { apiUrl } from '../lib/api-base';
 import { fmtAgo, fmtCountdown, fmtDate, fmtInt, fmtTime } from '../lib/format';
 import KpiRow from './components/kpi-row';
 import TrendChart from './components/trend-chart';
@@ -49,7 +50,7 @@ export default function Dashboard() {
     setLoading(true);
     if (refresh) setRefreshing(true);
     try {
-      const res = await fetch(`/api/metrics?${q}${refresh ? '&refresh=1' : ''}`, { cache: 'no-store' });
+      const res = await fetch(apiUrl(`/api/metrics?${q}${refresh ? '&refresh=1' : ''}`), { cache: 'no-store' });
       const json = await res.json();
       if (!res.ok || json.error) throw new Error(json.error || `Request failed (${res.status})`);
       if (id !== inFlight.current) return; // a newer request superseded this one

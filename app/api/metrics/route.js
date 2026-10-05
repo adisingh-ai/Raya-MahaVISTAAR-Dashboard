@@ -1,7 +1,12 @@
 import { sync, getCalls, getStatus } from '../../../lib/raya-sync';
 import { buildMetrics, resolveRange } from '../../../lib/analytics';
+import { handleOptions, json } from '../../../lib/cors';
 
 export const dynamic = 'force-dynamic';
+
+export function OPTIONS(request) {
+  return handleOptions(request);
+}
 
 // GET /api/metrics?range=30d            (today | 7d | 30d | 90d | all)
 // GET /api/metrics?from=YYYY-MM-DD&to=YYYY-MM-DD   (IST dates, inclusive)
@@ -12,12 +17,12 @@ export async function GET(request) {
   try {
     await sync({ force: params.get('refresh') === '1' });
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 500 });
+    return json(request, { error: err.message }, { status: 500 });
   }
 
   const status = getStatus();
   const range = resolveRange(params, status.oldestLoaded);
   const metrics = buildMetrics(getCalls(), range, { oldestLoaded: status.oldestLoaded });
 
-  return Response.json({ ...metrics, status, generatedAt: Date.now() });
+  return json(request, { ...metrics, status, generatedAt: Date.now() });
 }
