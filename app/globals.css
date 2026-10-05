@@ -22,7 +22,7 @@
   --delta-good: #006300;
   --delta-bad: #b42f2f;
 
-  --heat: 42, 120, 214;
+  --series-compare: #888780;
   --shadow: 0 1px 2px rgba(11, 11, 11, 0.04), 0 1px 1px rgba(11, 11, 11, 0.02);
   --radius: 10px;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -48,7 +48,7 @@
     --status-pending: #3987e5;
     --delta-good: #0ca30c;
     --delta-bad: #e66767;
-    --heat: 57, 135, 229;
+    --series-compare: #888780;
     --shadow: none;
   }
 }
@@ -72,7 +72,7 @@
   --status-pending: #3987e5;
   --delta-good: #0ca30c;
   --delta-bad: #e66767;
-  --heat: 57, 135, 229;
+  --series-compare: #888780;
   --shadow: none;
 }
 
@@ -329,7 +329,7 @@ select {
 
 .kpi-stack {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -473,6 +473,64 @@ select {
   height: 240px;
 }
 
+/* In the two-column row, charts grow so both cards end level. */
+.two-col > .card {
+  display: flex;
+  flex-direction: column;
+}
+
+.two-col > .card > .chart-box {
+  flex: 1 1 auto;
+  min-height: 240px;
+}
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.mini-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.mini-stat {
+  background: var(--hover-wash);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.mini-stat .stat-label {
+  font-size: 12px;
+}
+
+.mini-stat .stat-foot {
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+.mini-value {
+  font-size: 17px;
+  font-weight: 600;
+  margin-top: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
 .tooltip {
   background: var(--surface-raised);
   border: 1px solid var(--border);
@@ -528,66 +586,6 @@ select {
 .recharts-wrapper:focus,
 .recharts-sector:focus {
   outline: none;
-}
-
-/* ---------- heatmap ---------- */
-
-.heatmap {
-  display: grid;
-  grid-template-columns: 34px repeat(24, minmax(0, 1fr));
-  gap: 2px;
-  position: relative;
-}
-
-.heatmap .row-label {
-  font-size: 11.5px;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-}
-
-.heatmap .col-label {
-  font-size: 10.5px;
-  color: var(--text-muted);
-  text-align: left;
-  padding-top: 4px;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
-}
-
-.heat-cell {
-  aspect-ratio: 1 / 1;
-  min-height: 12px;
-  border-radius: 3px;
-  cursor: default;
-  outline: none;
-}
-
-.heat-cell:hover,
-.heat-cell:focus-visible {
-  box-shadow: 0 0 0 2px var(--text-primary);
-}
-
-.heat-scale {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  font-size: 11.5px;
-  color: var(--text-muted);
-}
-
-.heat-scale .ramp {
-  width: 120px;
-  height: 8px;
-  border-radius: 99px;
-}
-
-.float-tip {
-  position: fixed;
-  pointer-events: none;
-  z-index: 50;
-  transform: translate(-50%, calc(-100% - 10px));
 }
 
 /* ---------- insights ---------- */
@@ -728,9 +726,6 @@ td.mono {
   .kpis {
     grid-template-columns: 1fr;
   }
-  .kpi-stack {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
   .two-col {
     grid-template-columns: 1fr;
   }
@@ -752,12 +747,5 @@ td.mono {
   }
   .sync-meta {
     text-align: left;
-  }
-  .heatmap {
-    grid-template-columns: 30px repeat(24, minmax(0, 1fr));
-    gap: 1px;
-  }
-  .heatmap .col-label {
-    font-size: 9px;
   }
 }

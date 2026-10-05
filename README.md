@@ -35,8 +35,16 @@ For a long-running copy, use `npm run build && npm start` instead.
 ## What the numbers mean
 
 - **Total minutes** rounds each call up to the next whole minute, the same way
-  RAYA's Calls page does (a 1m 10s call counts as 2). "Actual talk time" is
-  the unrounded total.
+  RAYA's Calls page does (a 1m 10s call counts as 2).
+- **Unique callers** counts distinct phone numbers in the range; "calls per
+  caller" is total calls ÷ unique callers.
+- **Calls by hour of day** is a line of the average calls per day in each IST
+  hour, so ranges of any length compare. A single day (e.g. Today) shows plain
+  counts and the line stops at the current hour. "Compare" overlays the
+  previous period of the same length, or for a single day, a typical day
+  (average of the 30 days before it). The boxes underneath show the busiest
+  hour, the busy window (the shortest run of hours holding 85% of calls) and
+  the quietest 6 hours.
 - **Calls that never connected are left out of every number.** RAYA marks
   these `Failure`, `Failed` or `Unknown`: the caller reached the line but the
   agent never spoke, so there's no audio and 0 seconds of talk time. They are

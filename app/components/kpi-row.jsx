@@ -1,4 +1,4 @@
-import { delta, fmtDuration, fmtInt, fmtPct } from '../../lib/format';
+import { delta, fmtDuration, fmtInt } from '../../lib/format';
 
 const VS = {
   today: 'vs yesterday',
@@ -66,28 +66,20 @@ export default function KpiRow({ kpis, previous, rangeKey }) {
           unit="min"
           d={previous && delta(kpis.billedMinutes, p.billedMinutes)}
           vs={vs}
-          foot={`Rounded up per call, as in RAYA · ${fmtInt(kpis.totalSeconds / 60)} min actual talk time`}
+          foot="Rounded up per call, as in RAYA"
         />
         <Stat
           label="Avg duration · answered calls"
           value={fmtDuration(kpis.avgDuration)}
           d={previous && delta(kpis.avgDuration, p.avgDuration, { goodWhenUp: null })}
           vs={vs}
-          foot={`Median ${fmtDuration(kpis.medianDuration)}`}
         />
         <Stat
           label="Unique callers"
           value={fmtInt(kpis.uniqueCallers)}
           d={previous && delta(kpis.uniqueCallers, p.uniqueCallers)}
           vs={vs}
-          foot={kpis.callsPerCaller ? `${kpis.callsPerCaller.toFixed(2)} calls each` : null}
-        />
-        <Stat
-          label="Repeat callers"
-          value={fmtInt(kpis.repeatCallers)}
-          d={previous && delta(kpis.repeatCallers, p.repeatCallers)}
-          vs={vs}
-          foot={kpis.repeatCallShare !== null ? `Made ${fmtPct(kpis.repeatCallShare, 0)} of calls` : null}
+          foot={kpis.callsPerCaller ? `${kpis.callsPerCaller.toFixed(1)} calls per caller on average` : null}
         />
       </div>
     </section>

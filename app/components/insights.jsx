@@ -1,16 +1,13 @@
 import { fmtDateTime, fmtDuration, fmtInt, fmtPct } from '../../lib/format';
 
-const BUSIEST = { hour: 'Busiest hour', day: 'Busiest day', week: 'Busiest week' };
+const BUSIEST = { day: 'Busiest day', week: 'Busiest week' };
 
 export default function Insights({ data }) {
-  const { kpis, peakHour, busiestWeekday, busiestBucket } = data;
+  const { kpis, busiestWeekday, busiestBucket } = data;
+  // On hourly ranges the busiest hour is already on the hour-of-day chart.
+  const showBusiest = busiestBucket?.granularity !== 'hour';
   const items = [
-    {
-      label: 'Peak hour (IST)',
-      value: peakHour?.label ?? '—',
-      foot: peakHour ? `${fmtInt(peakHour.count)} calls` : null,
-    },
-    {
+    showBusiest && {
       label: busiestBucket ? BUSIEST[busiestBucket.granularity] : 'Busiest day',
       value: busiestBucket?.label ?? '—',
       foot: busiestBucket ? `${fmtInt(busiestBucket.count)} calls` : null,
@@ -30,7 +27,7 @@ export default function Insights({ data }) {
       value: fmtDuration(kpis.longestCall?.dur),
       foot: kpis.longestCall ? fmtDateTime(kpis.longestCall.at) : null,
     },
-  ];
+  ].filter(Boolean);
 
   return (
     <section className="grid insights" aria-label="Highlights">

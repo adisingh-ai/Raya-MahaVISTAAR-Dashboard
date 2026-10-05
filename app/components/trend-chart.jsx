@@ -179,7 +179,6 @@ function TrendTable({ trend }) {
             <th>Period</th>
             <th className="num">Calls</th>
             <th className="num">Answered</th>
-            <th className="num">Ongoing</th>
             <th className="num">Minutes</th>
             <th className="num">Avg duration</th>
           </tr>
@@ -190,7 +189,6 @@ function TrendTable({ trend }) {
               <td>{t.label}</td>
               <td className="num">{fmtInt(t.total)}</td>
               <td className="num">{fmtInt(t.completed)}</td>
-              <td className="num">{fmtInt(t.pending)}</td>
               <td className="num">{fmtInt(t.minutes)}</td>
               <td className="num">{fmtDuration(t.avgDuration)}</td>
             </tr>

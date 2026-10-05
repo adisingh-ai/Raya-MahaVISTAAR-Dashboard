@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { fmtAgo, fmtCountdown, fmtDate, fmtInt, fmtTime } from '../lib/format';
 import KpiRow from './components/kpi-row';
 import TrendChart from './components/trend-chart';
-import Heatmap from './components/heatmap';
+import HourlyChart from './components/hourly-chart';
 import DurationChart from './components/duration-chart';
 import Insights from './components/insights';
 import CallsTable from './components/calls-table';
@@ -205,7 +205,7 @@ export default function Dashboard() {
           <KpiRow kpis={data.kpis} previous={data.previous} rangeKey={data.range.key} />
           <TrendChart trend={data.trend} granularity={data.range.granularity} />
           <div className="grid two-col">
-            <Heatmap heatmap={data.heatmap} />
+            <HourlyChart hourly={data.hourly} rangeKey={data.range.key} />
             <DurationChart durations={data.durations} completed={data.kpis.completed} />
           </div>
           <Insights data={data} />
