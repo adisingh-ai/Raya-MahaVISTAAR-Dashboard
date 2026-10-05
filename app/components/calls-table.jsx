@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { apiUrl } from '../../lib/api-base';
 import { fmtClock, fmtDateTime, fmtInt } from '../../lib/format';
 
 const STATUS = {
@@ -39,7 +40,7 @@ export default function CallsTable({ query, version }) {
     params.set('pageSize', 20);
     if (status) params.set('status', status);
     if (q) params.set('q', q);
-    fetch(`/api/calls?${params}`, { cache: 'no-store' })
+    fetch(apiUrl(`/api/calls?${params}`), { cache: 'no-store' })
       .then((r) => r.json())
       .then((json) => !cancelled && setResult(json))
       .catch(() => {});
