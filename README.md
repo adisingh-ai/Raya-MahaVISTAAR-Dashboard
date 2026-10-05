@@ -19,8 +19,7 @@ For a long-running copy, use `npm run build && npm start` instead.
 | `RAYA_API_KEY` | RAYA API key (sent as `X-API-Key`). Server-side only, never reaches the browser. |
 | `RAYA_AGENT_ID` | UUID of the agent to report on |
 | `SHOW_FULL_NUMBERS` | Optional. `true` shows full caller numbers; by default they are masked (`93•••••468`). |
-| `NEXT_PUBLIC_API_BASE` | Optional. On Vercel, set to your tunnel URL so the UI calls your machine's API. Empty locally. |
-| `CORS_ORIGINS` | Optional. On the API machine, comma-separated Vercel origins allowed to call the API. |
+| `API_PROXY_TARGET` | On Vercel only. Cloudflare Tunnel URL of the API machine. Vercel proxies `/api/*` there (no CORS). |
 
 ## How the data stays fresh
 
@@ -68,18 +67,19 @@ For a long-running copy, use `npm run build && npm start` instead.
 ## Deploying
 
 The cache lives on local disk, so the API must run on one always-on machine
-(`npm run build && npm start`). You can still put the **UI on Vercel** and keep
-sync + cache on your machine:
+(`npm run build && npm start`). Put the **UI on Vercel** and keep sync + cache
+on that machine:
 
-1. On your machine: run the app, then expose it with a tunnel (Cloudflare Tunnel
-   or ngrok) so it has a public HTTPS URL.
-2. In that machine's `.env.local`, set `CORS_ORIGINS` to your Vercel URL
-   (e.g. `https://your-app.vercel.app`). Keep `RAYA_*` here only.
-3. On Vercel: deploy this repo and set `NEXT_PUBLIC_API_BASE` to the tunnel URL.
-   Do **not** put `RAYA_*` on Vercel — the browser talks straight to your machine
-   for `/api/metrics` and `/api/calls`.
+1. On the API machine: run the app and expose it with Cloudflare Tunnel
+   (public HTTPS URL). Keep `RAYA_*` only on that machine.
+2. On Vercel: deploy this repo and set:
+   - `API_PROXY_TARGET` = your tunnel URL (no trailing slash)
+   - **Remove / leave empty** `NEXT_PUBLIC_API_BASE` (important — otherwise the
+     browser talks to the tunnel directly and hits CORS)
+3. Redeploy after changing env vars.
 
-Locally, leave `NEXT_PUBLIC_API_BASE` empty so the UI uses same-origin APIs.
+The browser then calls `https://your-app.vercel.app/api/...`, and Vercel
+proxies those requests to the tunnel. No CORS setup needed on the API machine.
 
 Moving the cache into a database (e.g. Postgres) would let the whole stack run
 on serverless later; that is a larger change.
