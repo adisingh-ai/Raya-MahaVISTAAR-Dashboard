@@ -19,7 +19,7 @@ For a long-running copy, use `npm run build && npm start` instead.
 | `RAYA_API_KEY` | RAYA API key (sent as `X-API-Key`). Server-side only, never reaches the browser. |
 | `RAYA_AGENT_ID` | UUID of the agent to report on |
 | `SHOW_FULL_NUMBERS` | Optional. `true` shows full caller numbers; by default they are masked (`93•••••468`). |
-| `API_PROXY_TARGET` | On Vercel only. Cloudflare Tunnel URL of the API machine. Vercel proxies `/api/*` there (no CORS). |
+| `NEXT_PUBLIC_API_BASE` | On Vercel only. Public URL of the machine running the API. Empty locally. |
 
 ## How the data stays fresh
 
@@ -66,20 +66,27 @@ For a long-running copy, use `npm run build && npm start` instead.
 
 ## Deploying
 
-The cache lives on local disk, so the API must run on one always-on machine
-(`npm run build && npm start`). Put the **UI on Vercel** and keep sync + cache
-on that machine:
+Call download and metrics run only on your machine. Vercel hosts the page and
+the browser calls your machine for `/api/metrics` and `/api/calls`.
 
-1. On the API machine: run the app and expose it with Cloudflare Tunnel
-   (public HTTPS URL). Keep `RAYA_*` only on that machine.
-2. On Vercel: deploy this repo and set:
-   - `API_PROXY_TARGET` = your tunnel URL (no trailing slash)
-   - **Remove / leave empty** `NEXT_PUBLIC_API_BASE` (important — otherwise the
-     browser talks to the tunnel directly and hits CORS)
-3. Redeploy after changing env vars.
+1. On your machine, with `RAYA_API_KEY` and `RAYA_AGENT_ID` in `.env.local`:
 
-The browser then calls `https://your-app.vercel.app/api/...`, and Vercel
-proxies those requests to the tunnel. No CORS setup needed on the API machine.
+```
+npm install
+npm run build
+npm run backend
+```
 
-Moving the cache into a database (e.g. Postgres) would let the whole stack run
-on serverless later; that is a larger change.
+That listens on port **3001**. In another terminal:
+
+```
+cloudflared tunnel --url http://localhost:3001
+```
+
+2. On Vercel, set one variable and redeploy (it is read at build time):
+
+`NEXT_PUBLIC_API_BASE` = the `https://….trycloudflare.com` URL, no quotes and no trailing slash.
+
+Do not put `RAYA_API_KEY` or `RAYA_AGENT_ID` on Vercel. Leave `NEXT_PUBLIC_API_BASE` empty in the machine's `.env.local`.
+
+Keep `npm run backend` and the tunnel running. If the tunnel URL changes, update `NEXT_PUBLIC_API_BASE` and redeploy.

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "backend": "next start -p 3001"
   },
   "dependencies": {
     "next": "^16.3.7",
