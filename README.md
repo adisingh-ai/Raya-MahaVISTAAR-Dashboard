@@ -19,7 +19,7 @@ For a long-running copy, use `npm run build && npm start` instead.
 | `RAYA_API_KEY` | RAYA API key (sent as `X-API-Key`). Server-side only, never reaches the browser. |
 | `RAYA_AGENT_ID` | UUID of the agent to report on |
 | `SHOW_FULL_NUMBERS` | Optional. `true` shows full caller numbers; by default they are masked (`93•••••468`). |
-| `NEXT_PUBLIC_API_BASE` | On Vercel only. Public URL of the machine running the API. Empty locally. |
+| `API_PROXY_TARGET` | On Vercel only. Public URL of the machine running the API. Vercel calls it; the browser does not. |
 
 ## How the data stays fresh
 
@@ -66,8 +66,7 @@ For a long-running copy, use `npm run build && npm start` instead.
 
 ## Deploying
 
-Call download and metrics run only on your machine. Vercel hosts the page and
-the browser calls your machine for `/api/metrics` and `/api/calls`.
+Call download and metrics run only on your machine. Vercel hosts the page. The browser calls Vercel, and Vercel calls your machine, so there is no CORS step.
 
 1. On your machine, with `RAYA_API_KEY` and `RAYA_AGENT_ID` in `.env.local`:
 
@@ -80,13 +79,13 @@ npm run backend
 That listens on port **3001**. In another terminal:
 
 ```
-cloudflared tunnel --url http://localhost:3001
+ngrok http 3001
 ```
 
-2. On Vercel, set one variable and redeploy (it is read at build time):
+2. On Vercel, delete `NEXT_PUBLIC_API_BASE` if it is set. Add:
 
-`NEXT_PUBLIC_API_BASE` = the `https://….trycloudflare.com` URL, no quotes and no trailing slash.
+`API_PROXY_TARGET` = the `https://….ngrok-free.dev` URL, no quotes and no trailing slash.
 
-Do not put `RAYA_API_KEY` or `RAYA_AGENT_ID` on Vercel. Leave `NEXT_PUBLIC_API_BASE` empty in the machine's `.env.local`.
+Do not put `RAYA_API_KEY` or `RAYA_AGENT_ID` on Vercel. Redeploy after saving the variable.
 
-Keep `npm run backend` and the tunnel running. If the tunnel URL changes, update `NEXT_PUBLIC_API_BASE` and redeploy.
+Keep `npm run backend` and ngrok running. If the ngrok URL changes, update `API_PROXY_TARGET` and redeploy.

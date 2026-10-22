@@ -1,5 +1,6 @@
 import { sync, getCalls, getStatus } from '../../../lib/raya-sync';
 import { buildMetrics, resolveRange } from '../../../lib/analytics';
+import { proxyToBackend } from '../../../lib/backend-proxy';
 import { frontendOnlyBlock, handleOptions, json } from '../../../lib/cors';
 
 export const dynamic = 'force-dynamic';
@@ -12,6 +13,9 @@ export function OPTIONS(request) {
 // GET /api/metrics?from=YYYY-MM-DD&to=YYYY-MM-DD   (IST dates, inclusive)
 // Add &refresh=1 to pull the latest calls from RAYA first.
 export async function GET(request) {
+  const proxied = await proxyToBackend(request, '/api/metrics');
+  if (proxied) return proxied;
+
   const blocked = frontendOnlyBlock(request);
   if (blocked) return blocked;
 

@@ -1,5 +1,6 @@
 import { getCalls, getStatus } from '../../../lib/raya-sync';
 import { callsInRange, maskNumber, resolveRange } from '../../../lib/analytics';
+import { proxyToBackend } from '../../../lib/backend-proxy';
 import { frontendOnlyBlock, handleOptions, json } from '../../../lib/cors';
 
 export const dynamic = 'force-dynamic';
@@ -13,6 +14,9 @@ export function OPTIONS(request) {
 // GET /api/calls?range=30d&page=1&pageSize=20&status=Completed&q=351
 // Reads from the cache only; /api/metrics is what keeps the cache fresh.
 export async function GET(request) {
+  const proxied = await proxyToBackend(request, '/api/calls');
+  if (proxied) return proxied;
+
   const blocked = frontendOnlyBlock(request);
   if (blocked) return blocked;
 
