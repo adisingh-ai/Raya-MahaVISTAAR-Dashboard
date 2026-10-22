@@ -5,7 +5,12 @@
   "scripts": {
     "dev": "next dev -p 3002",
     "build": "next build",
+<<<<<<< HEAD
     "start": "next start -p 3002"
+=======
+    "start": "next start",
+    "backend": "next start -p 3001"
+>>>>>>> main-vercel-seployment2
   },
   "dependencies": {
     "next": "^16.3.7",
